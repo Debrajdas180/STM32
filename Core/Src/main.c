@@ -21,7 +21,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <string.h>
+#include "TLC5927.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -43,6 +44,8 @@
 /* Private variables ---------------------------------------------------------*/
 TIM_HandleTypeDef htim1;
 
+UART_HandleTypeDef huart2;
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -51,13 +54,28 @@ TIM_HandleTypeDef htim1;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_TIM1_Init(void);
+static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint32_t number = 0 ;
+uint8_t tbuf [150] = "\r\nEnter a Number \r\n";
+uint8_t rbuf [10];
+size_t length = 0;
+size_t g_receivedFlag=0;
+
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+	if(length<10 && (rbuf[length]!='\r' && rbuf[length]!='\n') ){
+		length++;
+		HAL_UART_Receive_IT(&huart2,rbuf+length,1);
+	}else if(rbuf[length]=='\r' || rbuf[length]=='\n'){
+		g_receivedFlag=1;
+
+	}
+}
 /* USER CODE END 0 */
 
 /**
@@ -73,7 +91,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-HAL_Init();
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -89,27 +107,28 @@ HAL_Init();
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM1_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-TIM1->CCR1 = 50 ;
-HAL_TIM_PWM_Start_IT(&htim1, TIM_CHANNEL_1);
 
+  TIM1->CCR1 = 50 ;
+  HAL_TIM_PWM_Start_IT(&htim1, TIM_CHANNEL_1);
 
+  HAL_UART_Transmit_IT(&huart2, tbuf, strlen((char*)tbuf));
+  HAL_UART_Receive_IT(&huart2,rbuf, 1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-//	  int i ;
-//	  if (htim1-> Instance == TIM1->){
-//		  for (i = 0 ; i <32 ; i ++){
-//			  if (var & 1 << i){
-//				  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, SET);
-//			  }
-//			  else {
-//				  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, RESET);
-//			  }
-//		  }
+
+	  if(g_receivedFlag){
+			  HAL_UART_Transmit_IT(&huart2, rbuf, length);
+			  g_receivedFlag=0;
+			  length=0;
+			  HAL_UART_Transmit_IT(&huart2, tbuf, strlen((char*)tbuf));
+			  HAL_UART_Receive_IT(&huart2,rbuf, 1);
+		  }
 	  }
     /* USER CODE END WHILE */
 
@@ -126,6 +145,7 @@ void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
@@ -147,6 +167,12 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART2;
+  PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
   }
@@ -228,6 +254,41 @@ static void MX_TIM1_Init(void)
 }
 
 /**
+  * @brief USART2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART2_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART2_Init 0 */
+
+  /* USER CODE END USART2_Init 0 */
+
+  /* USER CODE BEGIN USART2_Init 1 */
+
+  /* USER CODE END USART2_Init 1 */
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 115200;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART2_Init 2 */
+
+  /* USER CODE END USART2_Init 2 */
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -239,8 +300,8 @@ static void MX_GPIO_Init(void)
 /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);

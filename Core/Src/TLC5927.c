@@ -7,6 +7,7 @@
 #include "TLC5927.h"
 #include <stdint.h>
 #include "stm32f0xx_hal.h"
+#include "main.h"
 
 #define SDA_Pin GPIO_PIN_1 // edit the pin number as your require
 #define SDA_GPIO_Port GPIOB // edit the port number as your require
@@ -16,11 +17,11 @@
 #define OE_GPIO_port GPIOB // edit the port number as your require
 
 
-void high_low (uint32_t arr[], int size){
 
-static volatile int i , j = 0;
+void high_low(uint32_t arr[],int size){
+
+static volatile int i , j  = 0;
     HAL_GPIO_WritePin(LE_GPIO_port, LE_pin, 0);
-
 if (arr[j] & (uint32_t)1<<i)
 	HAL_GPIO_WritePin(SDA_GPIO_Port, SDA_Pin, 1);
 else

@@ -60,8 +60,8 @@ all: main-build
 main-build: 7_Segment_Display.elf secondary-outputs
 
 # Tool invocations
-7_Segment_Display.elf 7_Segment_Display.map: $(OBJS) $(USER_OBJS) C:\Users\dell3\STM32CubeIDE\workspace_1.12.0\7_Segment_Display\STM32F072RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "7_Segment_Display.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"C:\Users\dell3\STM32CubeIDE\workspace_1.12.0\7_Segment_Display\STM32F072RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="7_Segment_Display.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+7_Segment_Display.elf 7_Segment_Display.map: $(OBJS) $(USER_OBJS) D:\My_code\stm32\7_segment_LED\STM32F072RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "7_Segment_Display.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"D:\My_code\stm32\7_segment_LED\STM32F072RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="7_Segment_Display.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
