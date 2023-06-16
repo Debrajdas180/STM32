@@ -20,6 +20,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f0xx_it.h"
+#include "TLC5927.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -57,6 +59,7 @@
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim1;
 extern UART_HandleTypeDef huart2;
+extern uint8_t rbuf[];
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -144,21 +147,13 @@ void SysTick_Handler(void)
 /**
   * @brief This function handles TIM1 capture compare interrupt.
   */
+
 void TIM1_CC_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM1_CC_IRQn 0 */
-uint32_t var [] = { 0xffffc7e0 ,  //0
-		            0x000fc0e0 , //1
-					0xe3f1ffe0 , //2
-					0xe07fffe0 , //3
-					0x1c0ffee0 , //4
-					0xfc7e3fe0 , //5
-					0xfffe3fe0 , //6
-					0xe00fc4e0 , //7
-					0xffffffe0 , //8
-					0xfc7fffe0 , //9
-                   };
-high_low(var, 10);
+
+
+
 
   /* USER CODE END TIM1_CC_IRQn 0 */
   HAL_TIM_IRQHandler(&htim1);

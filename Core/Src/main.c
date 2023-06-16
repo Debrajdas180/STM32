@@ -67,6 +67,7 @@ size_t length = 0;
 size_t g_receivedFlag=0;
 
 
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	if(length<10 && (rbuf[length]!='\r' && rbuf[length]!='\n') ){
 		length++;
@@ -109,12 +110,14 @@ int main(void)
   MX_TIM1_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
   TIM1->CCR1 = 50 ;
   HAL_TIM_PWM_Start_IT(&htim1, TIM_CHANNEL_1);
-
   HAL_UART_Transmit_IT(&huart2, tbuf, strlen((char*)tbuf));
   HAL_UART_Receive_IT(&huart2,rbuf, 1);
+  disp_setNumber(rbuf);
+
+//  disp_setNumber(rbuf);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */

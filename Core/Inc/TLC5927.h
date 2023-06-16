@@ -9,6 +9,8 @@
 #define INC_TLC5927_H_
 #include <stdint.h>
 
-void high_low(uint32_t arr[], int size); // for printing 0 - 9 digit with its size
+void high_low(int size); // for printing 0 - 9 digit with its size
+void disp_setNumber(uint8_t *value); // for printing UART data to display
+
 
 #endif /* INC_TLC5927_H_ */

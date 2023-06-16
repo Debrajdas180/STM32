@@ -1,1 +1,2 @@
-TLC5927.c:21:6:high_low	4
+TLC5927.c:33:6:high_low	4
+TLC5927.c:68:6:disp_setNumber	3

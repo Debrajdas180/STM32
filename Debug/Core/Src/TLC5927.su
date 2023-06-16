@@ -1,1 +1,2 @@
-../Core/Src/TLC5927.c:21:6:high_low	16	static
+../Core/Src/TLC5927.c:33:6:high_low	16	static
+../Core/Src/TLC5927.c:68:6:disp_setNumber	16	static
