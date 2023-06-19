@@ -18,6 +18,8 @@
 #define OE_GPIO_port GPIOB // edit the port number as your require
 
 extern TIM_HandleTypeDef htim1;
+
+
 uint32_t var [] = { 0xffffc7e0 ,  //0
 		            0x000fc0e0 , //1
 					0xe3f1ffe0 , //2
@@ -47,39 +49,33 @@ if (i==32){
 }
 if (j == size){
 	j = 0 ;
+			}
 }
-}
-//void uart_print(uint32_t arr[],uint8_t *value){
-//    static volatile int i = 0;
-//    static uint8_t digit ;
-// 	digit =(*value)-'0';
-//if (arr[digit] & (uint32_t)1<<i){
-//	HAL_GPIO_WritePin(SDA_GPIO_Port, SDA_Pin, 1);
-//}
-//else
-//	HAL_GPIO_WritePin(SDA_GPIO_Port, SDA_Pin, 0);
-//i++;
-//if (i==32){
-//	HAL_GPIO_WritePin(LE_GPIO_port, LE_pin, 1);
-//	i = 0;
-//	HAL_GPIO_WritePin(OE_GPIO_port, OE_pin, 0);
-//}
-//}
-void disp_setNumber(uint8_t *value){
+
+void disp_setNumber(uint8_t value){
 
 	static volatile int i = 0;
 	static volatile uint8_t digit ;
-	digit =(*value)-'0';
-//	HAL_GPIO_WritePin(SDA_GPIO_Port, SDA_Pin, 0);
-	  if (var[digit] & (uint32_t)1<<i)
+	uint32_t valurToShift;
+	if(value!=0){
+		digit =(value)-'0';
+		valurToShift=var[digit];
+	}
+	else{
+		valurToShift=0;
+	}
+    HAL_GPIO_WritePin(LE_GPIO_port, LE_pin, 0);
+	  if (valurToShift & (uint32_t)1<<i){
 	  	HAL_GPIO_WritePin(SDA_GPIO_Port, SDA_Pin, 1);
+	  }
 	  else
 	  	HAL_GPIO_WritePin(SDA_GPIO_Port, SDA_Pin, 0);
 	  i++;
-	  if (i==32){
+	  if (i==33){
 	  	i = 0;
 	  	HAL_GPIO_WritePin(LE_GPIO_port, LE_pin, 1);
 	  	HAL_GPIO_WritePin(OE_GPIO_port, OE_pin, 0);
 	  	HAL_TIM_PWM_Stop_IT(&htim1, TIM_CHANNEL_1);
-}
-}
+	  	  	  	  }
+		}
+

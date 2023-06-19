@@ -1,2 +1,3 @@
-TLC5927.c:33:6:high_low	4
-TLC5927.c:68:6:disp_setNumber	3
+TLC5927.c:35:6:high_low	4
+TLC5927.c:55:6:disp_setNumber	4
+TLC5927.c:81:6:clear_screen	1

@@ -60,6 +60,7 @@
 extern TIM_HandleTypeDef htim1;
 extern UART_HandleTypeDef huart2;
 extern uint8_t rbuf[];
+extern uint8_t g_num;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -152,8 +153,7 @@ void TIM1_CC_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM1_CC_IRQn 0 */
 
-
-
+	disp_setNumber(g_num);
 
   /* USER CODE END TIM1_CC_IRQn 0 */
   HAL_TIM_IRQHandler(&htim1);
