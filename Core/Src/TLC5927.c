@@ -78,4 +78,9 @@ void disp_setNumber(uint8_t value){
 	  	HAL_TIM_PWM_Stop_IT(&htim1, TIM_CHANNEL_1);
 	  	  	  	  }
 		}
+void clear_screen(void){
+  	HAL_GPIO_WritePin(LE_GPIO_port, LE_pin, 0);
+  	HAL_GPIO_WritePin(OE_GPIO_port, OE_pin, 0);
+  	HAL_GPIO_WritePin(SDA_GPIO_Port, SDA_Pin, 0);
 
+}
